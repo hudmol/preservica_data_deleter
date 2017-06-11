@@ -1,0 +1,33 @@
+<div>
+  <p>
+    This job can <strong>permanently delete data</strong> from this ArchivesSpace instance.
+    Please be sure you know what you are doing before running it.
+    As a protection, by default it will only report on the data it would delete.
+    In order to actually delete data please check the 'delete' checkbox and enter a confirmation string.
+  </p>
+
+  <p>
+    Three kinds of records will be deleted from all repositories in this instance:
+  </p>
+
+  <ul>
+    <li>
+      'Other Finding Aid' Notes attached to Resources or ArchivalObjects
+      with content starting with 'https://preservica.library.yale.edu'
+    </li>
+    <li>DigitalObjects created by user 'preservicaprod'</li>
+    <li>DigitalObjects with a file_version with a file_uri starting with 'https://preservica.library.yale.edu'</li>
+
+  </ul>
+</div>
+
+<%= form.label_and_boolean "delete" %>
+
+<%= form.label_and_textfield "confirmation_string" %>
+
+<div class="col-sm-2"></div>
+<div class="col-sm-9">
+  The confirmation string must consist of the date and the username of the current user, in this format:
+  <em>YYYY-MM-DD user</em>
+</div>
+

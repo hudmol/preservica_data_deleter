@@ -1,0 +1,9 @@
+en:
+  preservica_data_deleter_job:
+    _singular: Preservica Data Deleter job
+    _plural: Preservica Data Deleter jobs
+    delete: Delete preservica data?
+    confirmation_string: Confirmation string
+  job:
+    types:
+      preservica_data_deleter_job: Preservica Data Deleter

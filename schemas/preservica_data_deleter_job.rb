@@ -5,7 +5,8 @@
     "type" => "object",
 
     "properties" => {
-      "delete" => {"type" => "boolean", "default" => "false"}
+      "delete" => {"type" => "boolean", "default" => "false"},
+      "confirmation_string" => {"type" => "string", "maxLength" => 255}
     }
   }
 }

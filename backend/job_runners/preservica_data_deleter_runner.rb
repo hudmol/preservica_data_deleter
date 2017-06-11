@@ -8,6 +8,14 @@ class PreservicaDataDeleterRunner < JobRunner
   def run
     delete = @json.job.fetch('delete', false)
 
+    if delete
+      unless @json.job['confirmation_string'] == Time.now.to_s.split.first + ' ' + @job.owner.username
+        log("*** Incorrect confirmation string. Aborting. ***")
+        self.finish!(:failed)
+        return
+      end
+    end
+
     log("Other Finding Aid Notes attached to Resources or AOs with content starting with https://preservica.library.yale.edu")
     Note.filter(Sequel.like(:notes, '%"type":"otherfindaid"%'))
       .filter(Sequel.like(:notes, '%"content":"https://preservica.library.yale.edu%'))
@@ -26,6 +34,7 @@ class PreservicaDataDeleterRunner < JobRunner
 
     Repository.each do |repo|
       break if self.canceled?
+      log("  ")
       log("--")
       log("Repository: #{repo.repo_code} (id=#{repo.id})")
       RequestContext.open(:repo_id => repo.id, :current_username => @job.owner.username) do
@@ -34,7 +43,6 @@ class PreservicaDataDeleterRunner < JobRunner
           .filter(:created_by => 'preservicaprod')
           .select(:id, :digital_object_id).each do |dig|
 
-          #DigitalObject.handle_delete([dig.id]) if delete
           DigitalObject[dig.id].delete if delete
           log("  #{dig.id} #{dig.digital_object_id}#{delete ? ' -- deleted' : ''}")
         end
@@ -63,9 +71,4 @@ class PreservicaDataDeleterRunner < JobRunner
     @job.write_output(s)
   end
 
-
-  def log_error(s, e = nil)
-    log("  *** #{s}")
-    Log.debug(e.backtrace.join("\n")) if e
-  end
 end
