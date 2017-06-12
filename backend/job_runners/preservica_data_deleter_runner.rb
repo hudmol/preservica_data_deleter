@@ -6,6 +6,13 @@ class PreservicaDataDeleterRunner < JobRunner
                         :cancel_permissions => :administer_system)
 
   def run
+    unless AppConfig.has_key?(:preservica_data_deleter_match_url)
+      log("*** Please set AppConfig[:preservica_data_deleter_match_url]. Aborting. ***")
+      self.finish!(:failed)
+    end
+
+    match_url = AppConfig[:preservica_data_deleter_match_url]
+
     delete = @json.job.fetch('delete', false)
 
     if delete
@@ -16,9 +23,9 @@ class PreservicaDataDeleterRunner < JobRunner
       end
     end
 
-    log("Other Finding Aid Notes attached to Resources or AOs with content starting with https://preservica.library.yale.edu")
+    log("Other Finding Aid Notes attached to Resources or AOs with content starting with #{match_url}")
     Note.filter(Sequel.like(:notes, '%"type":"otherfindaid"%'))
-      .filter(Sequel.like(:notes, '%"content":"https://preservica.library.yale.edu%'))
+      .filter(Sequel.like(:notes, '%"content":"#{match_url}%'))
       .where(Sequel.|(Sequel.~({:resource_id => nil}), Sequel.~({:archival_object_id => nil})))
       .select(:id)
       .each do |note|
@@ -49,10 +56,10 @@ class PreservicaDataDeleterRunner < JobRunner
 
         log("  ")
 
-        log("DOs with a file_version with a file_uri starting with https://preservica.library.yale.edu")
+        log("DOs with a file_version with a file_uri starting with #{match_url}")
         DigitalObject.filter(:repo_id => DigitalObject.active_repository)
           .join(:file_version, :digital_object_id => :digital_object__id)
-          .filter(Sequel.like(:file_uri, 'https://preservica.library.yale.edu%'))
+          .filter(Sequel.like(:file_uri, '#{match_url}%'))
           .select(Sequel.qualify(:digital_object, :id), Sequel.qualify(:digital_object, :digital_object_id)).each do |dig|
 
           DigitalObject[dig.id].delete if delete

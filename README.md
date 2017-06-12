@@ -31,6 +31,12 @@ See also:
 
   https://github.com/archivesspace/archivesspace/blob/master/plugins/README.md
 
+# Configuration
+
+You must set a match url in configuration, like this:
+
+    AppConfig[:preservica_data_deleter_match_url] = 'https://preservica.library.yale.edu'
+
 
 # How it works
 
