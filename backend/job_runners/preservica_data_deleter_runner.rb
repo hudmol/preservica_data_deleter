@@ -9,6 +9,7 @@ class PreservicaDataDeleterRunner < JobRunner
     unless AppConfig.has_key?(:preservica_data_deleter_match_url)
       log("*** Please set AppConfig[:preservica_data_deleter_match_url]. Aborting. ***")
       self.finish!(:failed)
+      return
     end
 
     match_url = AppConfig[:preservica_data_deleter_match_url]
