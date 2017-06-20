@@ -4,7 +4,11 @@ Preservica Data Deleter Plugin
 This is an ArchivesSpace plugin that introduces a new background job that deletes
 Preservica generated records from an ArchivesSpace instance.
 
-It was developed by Hudson Molonglo for Yale University.
+This plugin will run under ArchivesSpace v2.0 or higher.
+
+Note that Preservica Data Deleter jobs will fail under the Derby demo database.
+
+Developed by Hudson Molonglo for Yale University.
 
 # Getting Started
 
