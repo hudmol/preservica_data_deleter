@@ -14,6 +14,14 @@ class PreservicaDataDeleterRunner < JobRunner
 
     match_url = AppConfig[:preservica_data_deleter_match_url]
 
+    unless AppConfig.has_key?(:preservica_data_deleter_match_user)
+      log("*** Please set AppConfig[:preservica_data_deleter_match_user]. Aborting. ***")
+      self.finish!(:failed)
+      return
+    end
+
+    match_user = AppConfig[:preservica_data_deleter_match_user]
+
     delete = @json.job.fetch('delete', false)
 
     if delete
@@ -46,9 +54,9 @@ class PreservicaDataDeleterRunner < JobRunner
       log("--")
       log("Repository: #{repo.repo_code} (id=#{repo.id})")
       RequestContext.open(:repo_id => repo.id, :current_username => @job.owner.username) do
-        log("DOs created by user preservicaprod")
+        log("DOs created by user #{match_user}")
         DigitalObject.filter(:repo_id => DigitalObject.active_repository)
-          .filter(:created_by => 'preservicaprod')
+          .filter(:created_by => match_user)
           .select(:id, :digital_object_id).each do |dig|
 
           DigitalObject[dig.id].delete if delete

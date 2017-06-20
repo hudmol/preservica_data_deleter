@@ -37,9 +37,10 @@ See also:
 
 # Configuration
 
-You must set a match url in configuration, like this:
+You must set a match url and a match user in configuration, like this:
 
     AppConfig[:preservica_data_deleter_match_url] = 'https://preservica.library.yale.edu'
+    AppConfig[:preservica_data_deleter_match_user] = 'preservicaprod'
 
 
 # How it works
