@@ -34,7 +34,7 @@ class PreservicaDataDeleterRunner < JobRunner
 
     log("Other Finding Aid Notes attached to Resources or AOs with content starting with #{match_url}")
     Note.filter(Sequel.like(:notes, '%"type":"otherfindaid"%'))
-      .filter(Sequel.like(:notes, '%"content":"#{match_url}%'))
+      .filter(Sequel.like(:notes, '%"content":"' + match_url + '%'))
       .where(Sequel.|(Sequel.~({:resource_id => nil}), Sequel.~({:archival_object_id => nil})))
       .select(:id)
       .each do |note|
@@ -68,7 +68,7 @@ class PreservicaDataDeleterRunner < JobRunner
         log("DOs with a file_version with a file_uri starting with #{match_url}")
         DigitalObject.filter(:repo_id => DigitalObject.active_repository)
           .join(:file_version, :digital_object_id => :digital_object__id)
-          .filter(Sequel.like(:file_uri, '#{match_url}%'))
+          .filter(Sequel.like(:file_uri, "#{match_url}%"))
           .select(Sequel.qualify(:digital_object, :id), Sequel.qualify(:digital_object, :digital_object_id)).each do |dig|
 
           DigitalObject[dig.id].delete if delete
