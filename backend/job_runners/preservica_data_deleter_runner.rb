@@ -39,10 +39,13 @@ class PreservicaDataDeleterRunner < JobRunner
       .select(:id)
       .each do |note|
 
-      DB.open do |db|
-        db[:subnote_metadata].filter(:note_id => note.id).delete
+      if delete
+        DB.open do |db|
+          db[:subnote_metadata].filter(:note_id => note.id).delete
+        end
+        Note[note.id].delete
       end
-      Note[note.id].delete if delete
+
       log("  Note #{note.id}#{delete ? ' -- deleted' : ''}")
     end
 
